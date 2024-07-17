@@ -23,6 +23,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        navy: "#001F3F",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

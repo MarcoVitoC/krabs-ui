@@ -8,8 +8,12 @@ module.exports = {
     'eslint:recommended',
     '@vue/eslint-config-typescript'
   ],
+  env: {
+    node: true
+  },
   rules: {
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    'no-mixed-spaces-and-tabs': 'off'
   },
   parserOptions: {
     ecmaVersion: 'latest'
