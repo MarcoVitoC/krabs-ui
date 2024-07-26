@@ -1,24 +1,55 @@
 <script setup lang="ts">
-import Button from '@/components/ui/button/Button.vue';
-import { CirclePlus, EllipsisVertical  } from 'lucide-vue-next';
+import Form from '@/components/Form.vue';
+import { Button } from '@/components/ui/button'
+import { EllipsisVertical  } from 'lucide-vue-next';
+import { getAllExpenses } from './ts/expense';
+import { formatDate } from '@vueuse/core';
+
+const monthlyExpenses = getAllExpenses({
+  month: new Date().getMonth() + 1,
+  year: new Date().getFullYear()
+});
+
+const isEmpty = (expenses: Array<Object>): boolean => {
+  return expenses.length === 0;
+}
+
+const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR'
+  }).format(amount);
+}
+
+const iconBackgroundColor:Record<string, string> = {
+  'Food & Drink': '#FFEBCC',
+  'Transport': '#F0F8FF',
+  'Lifestyle': '#FFE4B5',
+  'Investment': '#D4EDDA',
+  'Shopping': '#FFC0CB',
+  'Groceries': '#DFF0D8',
+  'Other': '#F5F5F5'
+}
 </script>
 
 <template>
   <div class="p-10">
     <header class="flex justify-between">
       <p class="text-2xl font-semibold">📑 Your transactions:</p>
-      <div>
-        <Button size="sm"><CirclePlus class="w-h h-4"/>Add expense</Button>
-      </div>
+      <Form />
     </header>
-    <div class="my-8">
-      <p class="font-medium text-lg mb-3">Wednesday, 17 July 2024</p>
-      <div class="flex justify-between items-center bg-primary-foreground border-2 border-navy rounded space-x-10 p-3">
-        <p>🍴 Food</p>
-        <p>Mc.Donald</p>
-        <p>Rp500.000</p>
-        <p>Gopay</p>
-        <Button size="icon"><EllipsisVertical class="w-h h-4"/></Button>
+    <div v-for="[date, expenses] in Object.entries(monthlyExpenses)" :key="date">
+      <div class="my-8" v-if="!isEmpty(expenses)">
+        <p class="font-medium text-lg mb-3">{{ formatDate(new Date(date), "dddd, DD MMMM YYYY") }}</p>
+        <div class="flex justify-between items-center bg-primary-foreground border-2 border-navy rounded space-x-10 p-3" v-for="expense in expenses" :key="expense.id">
+          <p class="w-40 p-3 rounded-lg" :style="{backgroundColor: iconBackgroundColor[expense.category.name]}">
+            {{ expense.category.icon }} {{ expense.category.name }}
+          </p>
+          <p class="flex-1">{{ expense.description }}</p>
+          <p class="flex-1">{{ formatCurrency(expense.amount) }}</p>
+          <p class="flex-1">{{ expense.paymentMethod }}</p>
+          <Button size="icon"><EllipsisVertical class="h-4"/></Button>
+        </div>
       </div>
     </div>
   </div>
