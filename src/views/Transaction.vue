@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Form from '@/components/Form.vue';
+import AddExpense from '@/components/AddExpense.vue';
 import { Button } from '@/components/ui/button'
 import { EllipsisVertical  } from 'lucide-vue-next';
 import { getAllExpenses } from './ts/expense';
@@ -36,13 +36,13 @@ const iconBackgroundColor:Record<string, string> = {
   <div class="p-10">
     <header class="flex justify-between">
       <p class="text-2xl font-semibold">📑 Your transactions:</p>
-      <Form />
+      <AddExpense />
     </header>
     <div v-for="[date, expenses] in Object.entries(monthlyExpenses)" :key="date">
       <div class="my-8" v-if="!isEmpty(expenses)">
         <p class="font-medium text-lg mb-3">{{ formatDate(new Date(date), "dddd, DD MMMM YYYY") }}</p>
         <div class="flex justify-between items-center bg-primary-foreground border-2 border-navy rounded space-x-10 p-3" v-for="expense in expenses" :key="expense.id">
-          <p class="w-40 p-3 rounded-lg" :style="{backgroundColor: iconBackgroundColor[expense.category.name]}">
+          <p class="w-36 p-3 rounded-lg" :style="{backgroundColor: iconBackgroundColor[expense.category.name]}">
             {{ expense.category.icon }} {{ expense.category.name }}
           </p>
           <p class="flex-1">{{ expense.description }}</p>

@@ -17,11 +17,9 @@ export function getAllExpenses(params = {}) {
 }
 
 export function saveExpense(payload = {}) {
-  onMounted(async () => {
-    await axios.post('http://localhost:8080/api/expenses', { payload }).then(response => {
-      console.log(response);
-    }).catch(error => {
-      console.error(error);
-    })
+  axios.post('http://localhost:8080/api/expenses', payload).then(response => {
+    return response.data;
+  }).catch(error => {
+    console.error(error);
   })
 }

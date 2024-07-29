@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
+  DialogClose, 
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -61,14 +62,16 @@ const handleAddExpense = () => {
           </SelectItem>
         </SelectContent>
       </Select>
-
       <Input v-model="description" placeholder="Description" />
       <Input v-model="amount" type="number" placeholder="Amount" />
       <Input v-model="paymentMethod" placeholder="Payment Method" />
+
       <DialogFooter>
-        <Button type="submit" @click="handleAddExpense()">
-          Save
-        </Button>
+        <DialogClose>
+          <Button type="submit" @click="handleAddExpense()">
+            Save
+          </Button>
+        </DialogClose>
       </DialogFooter>
     </DialogContent>
   </Dialog>
