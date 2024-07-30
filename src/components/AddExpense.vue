@@ -17,10 +17,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
+import { useToast, Toaster } from '@/components/ui/toast'
 import { CirclePlus } from 'lucide-vue-next';
 import { getAllCategories } from '@/views/ts/category';
 import { saveExpense } from '@/views/ts/expense';
 import { ref } from 'vue';
+
+const { toast } = useToast();
 
 const categories = getAllCategories();
 
@@ -37,10 +40,16 @@ const handleAddExpense = () => {
   }
 
   saveExpense(newExpense);
+  toast({
+    title: '✅ Success',
+    description: 'New Expense Added Successfully!'
+  });
 }
 </script>
 
 <template>
+  <Toaster/>
+
   <Dialog>
     <DialogTrigger>
       <Button size="sm">
@@ -64,7 +73,17 @@ const handleAddExpense = () => {
       </Select>
       <Input v-model="description" placeholder="Description" />
       <Input v-model="amount" type="number" placeholder="Amount" />
-      <Input v-model="paymentMethod" placeholder="Payment Method" />
+      <Select v-model="paymentMethod">
+        <SelectTrigger>
+          <SelectValue placeholder="Select payment method" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Cash">Cash</SelectItem>
+          <SelectItem value="BCA">BCA</SelectItem>
+          <SelectItem value="Gopay">Gopay</SelectItem>
+          <SelectItem value="OVO">OVO</SelectItem>
+        </SelectContent>
+      </Select>
 
       <DialogFooter>
         <DialogClose>
