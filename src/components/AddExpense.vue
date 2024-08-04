@@ -18,32 +18,43 @@ import {
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { useToast, Toaster } from '@/components/ui/toast'
-import { CirclePlus } from 'lucide-vue-next';
-import { getAllCategories } from '@/views/ts/category';
-import { saveExpense } from '@/views/ts/expense';
+import { CirclePlus } from 'lucide-vue-next'
 import { ref } from 'vue';
+import { useExpenseStore } from '@/store/expense'
+import { useCategoryStore } from '@/store/category'
 
-const { toast } = useToast();
+const { toast } = useToast()
 
-const categories = getAllCategories();
+const category = useCategoryStore()
+const expense = useExpenseStore()
 
-const category = ref<string>('')
+category.fetchAllCategories()
+
+const categoryId = ref<string>('')
 const description = ref<string>('')
 const amount = ref<number>()
 const paymentMethod = ref<string>('')
 const handleAddExpense = () => {
   const newExpense = {
-    categoryId: category.value,
+    categoryId: categoryId.value,
     description: description.value,
     amount: amount.value,
     paymentMethod: paymentMethod.value
   }
 
-  saveExpense(newExpense);
+  expense.saveExpense(newExpense)
   toast({
     title: '✅ Success',
     description: 'New Expense Added Successfully!'
   });
+  clearForm()
+}
+
+const clearForm = () => {
+  categoryId.value = ''
+  description.value = ''
+  amount.value = undefined
+  paymentMethod.value = ''
 }
 </script>
 
@@ -61,12 +72,12 @@ const handleAddExpense = () => {
         <DialogTitle>Add expense</DialogTitle>
       </DialogHeader>
       
-      <Select v-model="category">
+      <Select v-model="categoryId">
         <SelectTrigger>
           <SelectValue placeholder="Select a category" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem v-for="category in categories" :key="category.id" :value="category.id">
+          <SelectItem v-for="category in category.getAllCategories" :key="category.id" :value="category.id">
             {{ category.icon }} {{ category.name }}
           </SelectItem>
         </SelectContent>

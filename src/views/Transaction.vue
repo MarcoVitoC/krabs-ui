@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import AddExpense from '@/components/AddExpense.vue';
+import AddExpense from '@/components/AddExpense.vue'
 import { Button } from '@/components/ui/button'
-import { EllipsisVertical  } from 'lucide-vue-next';
-import { getAllExpenses } from './ts/expense';
+import { EllipsisVertical  } from 'lucide-vue-next'
 import { formatDate } from '@vueuse/core';
+import { useExpenseStore } from '@/store/expense'
 
-const monthlyExpenses = getAllExpenses({
+const expense = useExpenseStore()
+expense.fetchAllExpenses({
   month: new Date().getMonth() + 1,
   year: new Date().getFullYear()
 });
@@ -38,7 +39,7 @@ const iconBackgroundColor:Record<string, string> = {
       <p class="text-2xl font-semibold">📑 Your transactions:</p>
       <AddExpense />
     </header>
-    <div v-for="[date, expenses] in Object.entries(monthlyExpenses)" :key="date">
+    <div v-for="[date, expenses] in Object.entries(expense.getMonthlyExpenses)" :key="date">
       <div class="my-8" v-if="!isEmpty(expenses)">
         <p class="font-medium text-lg mb-3">{{ formatDate(new Date(date), "dddd, DD MMMM YYYY") }}</p>
         <div class="flex justify-between items-center bg-primary-foreground border-2 border-navy rounded space-x-10 p-3" v-for="expense in expenses" :key="expense.id">
