@@ -1,16 +1,35 @@
 import { defineStore } from "pinia"
 import type { Expense } from '@/types/Expense';
+import type { Category } from '@/types/Category';
 import axios from "axios"
+
+const category: Category = {
+  id: '',
+  icon: '',
+  name: ''
+}
+
+const selectedExpense: Expense = {
+  id: '',
+  category: category,
+  description: '',
+  amount: 0,
+  paymentMethod: ''
+}
 
 export const useExpenseStore = defineStore('expense', {
   state: () => {
     return {
-      expenses: new Map<string, Expense[]>()
+      expenses: new Map<string, Expense[]>(),
+      expense: selectedExpense
     }
   },
   getters: {
     getMonthlyExpenses(state) {
       return state.expenses
+    },
+    getSelectedExpense(state) {
+      return state.expense
     }
   },
   actions: {
@@ -18,6 +37,14 @@ export const useExpenseStore = defineStore('expense', {
       await axios.get('http://localhost:8080/api/expenses', { params })
       .then(response => {
         this.expenses = response.data.data
+      }).catch(error => {
+        console.error(error)
+      })
+    },
+    async fetchExpense(id: string) {
+      await axios.get(`http://localhost:8080/api/expenses/${id}`)
+      .then(response => {
+        this.expense = response.data.data
       }).catch(error => {
         console.error(error)
       })

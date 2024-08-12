@@ -18,13 +18,16 @@ import {
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { useToast, Toaster } from '@/components/ui/toast'
-import { CirclePlus } from 'lucide-vue-next'
-import { ref, computed } from 'vue';
+import { EllipsisVertical  } from 'lucide-vue-next'
+import { computed, ref } from 'vue';
 import { useExpenseStore } from '@/store/expense'
 import { useCategoryStore } from '@/store/category'
+import type { Expense } from '@/types/Expense';
 import type { Category } from '@/types/Category';
 
 const { toast } = useToast()
+
+const props = defineProps<{ expenseId: string }>();
 
 const categoryStore = useCategoryStore()
 const expenseStore = useExpenseStore()
@@ -35,12 +38,28 @@ const amount = ref<number>()
 const paymentMethod = ref<string>('')
 
 const categories = computed<Category[]>(() => categoryStore.getAllCategories)
+const selectedExpense = computed<Expense>(() => expenseStore.getSelectedExpense)
 
-const getAllCategories = async () => {
-  await categoryStore.fetchAllCategories()
+const fetchExpenseData = async () => {
+  await Promise.all([
+    categoryStore.fetchAllCategories(),
+    expenseStore.fetchExpense(props.expenseId)
+  ])
+
+  const { 
+    category, 
+    description: newDescription, 
+    amount: newAmount, 
+    paymentMethod: newPaymentMethod 
+  } = selectedExpense.value
+
+  categoryId.value = category.id
+  description.value = newDescription
+  amount.value = newAmount
+  paymentMethod.value = newPaymentMethod
 }
 
-const handleAddExpense = () => {
+const handleUpdateExpense = () => {
   const newExpense = {
     categoryId: categoryId.value,
     description: description.value,
@@ -51,7 +70,7 @@ const handleAddExpense = () => {
   expenseStore.saveExpense(newExpense)
   toast({
     title: '✅ Success',
-    description: 'New Expense Added Successfully!'
+    description: 'Expense Updated Successfully!'
   });
   clearForm()
 }
@@ -59,7 +78,7 @@ const handleAddExpense = () => {
 const clearForm = () => {
   categoryId.value = ''
   description.value = ''
-  amount.value = undefined
+  amount.value = 0
   paymentMethod.value = ''
 }
 </script>
@@ -69,13 +88,13 @@ const clearForm = () => {
 
   <Dialog>
     <DialogTrigger>
-      <Button size="sm" @click="getAllCategories">
-        <CirclePlus class="h-4"/>Add expense
+      <Button size="icon" @click="fetchExpenseData">
+        <EllipsisVertical class="h-4"/>
       </Button>
     </DialogTrigger>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Add expense</DialogTitle>
+        <DialogTitle>Edit expense</DialogTitle>
       </DialogHeader>
       
       <Select v-model="categoryId">
@@ -104,7 +123,7 @@ const clearForm = () => {
 
       <DialogFooter>
         <DialogClose>
-          <Button type="submit" @click="handleAddExpense()">
+          <Button type="submit" @click="handleUpdateExpense()">
             Save
           </Button>
         </DialogClose>
