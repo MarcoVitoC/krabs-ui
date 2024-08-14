@@ -81,27 +81,19 @@ const handleUpdateExpense = () => {
     paymentMethod: paymentMethod.value
   }
 
-  expenseStore.saveExpense(newExpense)
-  toast({
-    title: '✅ Success',
-    description: 'Expense Updated Successfully!'
-  });
-  clearForm()
-}
-
-const clearForm = () => {
-  categoryId.value = ''
-  description.value = ''
-  amount.value = 0
-  paymentMethod.value = ''
+  expenseStore.updateExpense(props.expenseId, newExpense)
+  showSuccessToast('Expense Updated Successfully!')
 }
 
 const handleDeleteExpense = () => {
   expenseStore.deleteExpense(props.expenseId)
-  
+  showSuccessToast('Expense Deleted Successfully!')
+}
+
+const showSuccessToast = (message: string) => {
   toast({
     title: '✅ Success',
-    description: 'Expense Deleted Successfully!'
+    description: message
   });
 }
 </script>

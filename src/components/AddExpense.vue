@@ -49,10 +49,7 @@ const handleAddExpense = () => {
   }
 
   expenseStore.saveExpense(newExpense)
-  toast({
-    title: '✅ Success',
-    description: 'New Expense Added Successfully!'
-  });
+  showSuccessToast('New Expense Added Successfully!')
   clearForm()
 }
 
@@ -61,6 +58,13 @@ const clearForm = () => {
   description.value = ''
   amount.value = undefined
   paymentMethod.value = ''
+}
+
+const showSuccessToast = (message: string) => {
+  toast({
+    title: '✅ Success',
+    description: message
+  });
 }
 </script>
 

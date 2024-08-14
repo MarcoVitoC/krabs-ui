@@ -59,6 +59,16 @@ export const useExpenseStore = defineStore('expense', {
         console.error(error)
       })
     },
+    async updateExpense(id: string, payload = {}) {
+      await axios.put(`http://localhost:8080/api/expenses/${id}`, payload).then(() => {
+        this.fetchAllExpenses({
+          month: new Date().getMonth() + 1,
+          year: new Date().getFullYear()
+        })
+      }).catch(error => {
+        console.error(error)
+      })
+    },
     async deleteExpense(id: string) {
       await axios.delete(`http://localhost:8080/api/expenses/${id}`)
       .then(() => {
