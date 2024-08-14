@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import AddExpense from '@/components/AddExpense.vue'
-import EditOrDelete from '@/components/EditOrDelete.vue';
+import UpdateOrDeleteExpense from '@/components/UpdateOrDeleteExpense.vue';
 import { formatDate } from '@vueuse/core';
 import { useExpenseStore } from '@/store/expense'
 
@@ -57,7 +57,7 @@ const iconBackgroundColor:Record<string, string> = {
           <p class="flex-1">{{ formatCurrency(expense.amount) }}</p>
           <p class="flex-1">{{ expense.paymentMethod }}</p>
           
-          <EditOrDelete :expenseId="expense.id" />
+          <UpdateOrDeleteExpense :expenseId="expense.id" />
         </div>
       </div>
     </div>

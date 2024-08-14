@@ -58,6 +58,17 @@ export const useExpenseStore = defineStore('expense', {
       }).catch(error => {
         console.error(error)
       })
+    },
+    async deleteExpense(id: string) {
+      await axios.delete(`http://localhost:8080/api/expenses/${id}`)
+      .then(() => {
+        this.fetchAllExpenses({
+          month: new Date().getMonth() + 1,
+          year: new Date().getFullYear()
+        })
+      }).catch(error => {
+        console.error(error)
+      })
     }
   }
 })
