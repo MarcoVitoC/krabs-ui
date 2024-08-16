@@ -44,7 +44,7 @@ const iconBackgroundColor:Record<string, string> = {
   <div class="p-10">
     <header class="flex justify-between">
       <p class="text-2xl font-semibold">📑 Your transactions:</p>
-      <AddExpense />
+      <AddExpense/>
     </header>
     <div v-for="[date, expenses] in Object.entries(monthlyExpenses)" :key="date">
       <div class="my-8" v-if="!isEmpty(expenses)">

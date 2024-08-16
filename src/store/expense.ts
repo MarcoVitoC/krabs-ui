@@ -34,24 +34,22 @@ export const useExpenseStore = defineStore('expense', {
   },
   actions: {
     async fetchAllExpenses(params = {}) {
-      await axios.get('http://localhost:8080/api/expenses', { params })
-      .then(response => {
+      await axios.get('http://localhost:8080/api/expenses', { params }).then(response => {
         this.expenses = response.data.data
       }).catch(error => {
         console.error(error)
       })
     },
     async fetchExpense(id: string) {
-      await axios.get(`http://localhost:8080/api/expenses/${id}`)
-      .then(response => {
+      await axios.get(`http://localhost:8080/api/expenses/${id}`).then(response => {
         this.expense = response.data.data
       }).catch(error => {
         console.error(error)
       })
     },
     async saveExpense(payload = {}) {
-      await axios.post('http://localhost:8080/api/expenses', payload).then(() => {
-        this.fetchAllExpenses({
+      await axios.post('http://localhost:8080/api/expenses', payload).then(async () => {
+        await this.fetchAllExpenses({
           month: new Date().getMonth() + 1,
           year: new Date().getFullYear()
         })
@@ -70,8 +68,7 @@ export const useExpenseStore = defineStore('expense', {
       })
     },
     async deleteExpense(id: string) {
-      await axios.delete(`http://localhost:8080/api/expenses/${id}`)
-      .then(() => {
+      await axios.delete(`http://localhost:8080/api/expenses/${id}`).then(() => {
         this.fetchAllExpenses({
           month: new Date().getMonth() + 1,
           year: new Date().getFullYear()
