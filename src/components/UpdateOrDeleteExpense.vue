@@ -59,13 +59,13 @@ const handleOpenModal = async (operation: string) => {
 
 const handleUpdateExpense = (newExpense: Object) => {
   expenseStore.updateExpense(props.expenseId, newExpense)
-  showSuccessToast('Expense Updated Successfully!')
+  // showSuccessToast('Expense Updated Successfully!')
 }
 
 const handleDeleteExpense = () => {
   expenseStore.deleteExpense(props.expenseId)
   isModalOpen.value = false
-  showSuccessToast('Expense Deleted Successfully!')
+  // showSuccessToast('Expense Deleted Successfully!')
 }
 
 const showSuccessToast = (message: string) => {

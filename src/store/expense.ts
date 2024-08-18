@@ -48,8 +48,8 @@ export const useExpenseStore = defineStore('expense', {
       })
     },
     async saveExpense(payload = {}) {
-      await axios.post('http://localhost:8080/api/expenses', payload).then(async () => {
-        await this.fetchAllExpenses({
+      await axios.post('http://localhost:8080/api/expenses', payload).then(() => {
+        this.fetchAllExpenses({
           month: new Date().getMonth() + 1,
           year: new Date().getFullYear()
         })

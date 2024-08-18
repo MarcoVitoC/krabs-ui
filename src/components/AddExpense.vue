@@ -43,7 +43,7 @@ const form = useForm({
 
 const handleAddExpense = async (newExpense: Object) => {
   await expenseStore.saveExpense(newExpense)
-  showSuccessToast('New Expense Added Successfully!');
+  // showSuccessToast('New Expense Added Successfully!')
 }
 
 const showSuccessToast = (message: string) => {
