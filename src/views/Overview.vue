@@ -76,7 +76,7 @@ const weeklyExpenses = computed(() => {
 
 const expenseChartData = computed(() => {
   return Object.keys(weeklyExpenses.value).map(date => ({
-    date: formatDate(new Date(date), "dddd, DD MMMM YYYY"),
+    date: formatDate(new Date(date), "DD MMMM YYYY"),
     total: weeklyExpenses.value[date]
   }))
 })
@@ -101,7 +101,7 @@ const expenseChartData = computed(() => {
       </p>
     </header>
     <AreaChart 
-      class="mt-5 w-[900px] h-[450px] border-2 border-navy rounded" 
+      class="mt-5 p-5 w-[900px] h-[450px] border-2 border-navy rounded" 
       index="date" 
       :data="expenseChartData" 
       :categories="['total']"
