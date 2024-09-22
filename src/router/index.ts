@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Register from '@/views/auth/Register.vue'
+import Login from '@/views/auth/Login.vue'
 import Overview from '@/views/Overview.vue'
 import Transaction from '@/views/Transaction.vue'
 
@@ -7,14 +9,32 @@ const router = createRouter({
   linkActiveClass: 'bg-gray-200',
   routes: [
     {
+      name: 'Register',
+      path: '/register',
+      component: Register
+    },
+    {
+      name: 'Login',
       path: '/',
+      component: Login
+    },
+    {
+      name: 'Overview',
+      path: '/overview',
       component: Overview
     },
     {
+      name: 'Transactions',
       path: '/transactions',
       component: Transaction
     }
   ]
+})
+
+router.beforeEach(async (to) => {
+  const isAuthenticated = !!localStorage.getItem('token');
+
+  if (!isAuthenticated && to.name !== 'Login' && to.name !== 'Register') return { name: 'Login' }
 })
 
 export default router
