@@ -5,7 +5,7 @@ import router from "@/router"
 export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
-      token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')!) : null
+      token: localStorage.getItem('token') || null
     }
   },
   actions: {
@@ -26,6 +26,10 @@ export const useAuthStore = defineStore('auth', {
         this.token = token
         router.push({name: 'Overview'})
       }
+    },
+    logout() {
+      localStorage.removeItem('token')
+      router.push({name: 'Login'})
     }
   }
 })
