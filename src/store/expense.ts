@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import type { Expense } from '@/types/Expense';
 import type { Category } from '@/types/Category';
+import { useAuthStore } from '@/store/auth';
 import axios from "axios"
 
 const category: Category = {
@@ -30,25 +31,42 @@ export const useExpenseStore = defineStore('expense', {
     },
     getSelectedExpense(state) {
       return state.expense
+    },
+    getAuthToken() {
+      const authStore = useAuthStore()
+      return authStore.getToken
     }
   },
   actions: {
     async fetchAllExpenses(params = {}) {
-      await axios.get('http://localhost:8080/api/expenses', { params }).then(response => {
+      await axios.get('http://localhost:8080/api/expenses', {
+        params, 
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken}`
+        }
+      }).then(response => {
         this.expenses = response.data.data
       }).catch(error => {
         console.error(error)
       })
     },
     async fetchExpense(id: string) {
-      await axios.get(`http://localhost:8080/api/expenses/${id}`).then(response => {
+      await axios.get(`http://localhost:8080/api/expenses/${id}`, {
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken}`
+        }
+      }).then(response => {
         this.expense = response.data.data
       }).catch(error => {
         console.error(error)
       })
     },
     async saveExpense(payload = {}) {
-      await axios.post('http://localhost:8080/api/expenses', payload).then(() => {
+      await axios.post('http://localhost:8080/api/expenses', payload, {
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken}`
+        }
+      }).then(() => {
         this.fetchAllExpenses({
           month: new Date().getMonth() + 1,
           year: new Date().getFullYear()
@@ -58,7 +76,11 @@ export const useExpenseStore = defineStore('expense', {
       })
     },
     async updateExpense(id: string, payload = {}) {
-      await axios.put(`http://localhost:8080/api/expenses/${id}`, payload).then(() => {
+      await axios.put(`http://localhost:8080/api/expenses/${id}`, payload, {
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken}`
+        }
+      }).then(() => {
         this.fetchAllExpenses({
           month: new Date().getMonth() + 1,
           year: new Date().getFullYear()
@@ -68,7 +90,11 @@ export const useExpenseStore = defineStore('expense', {
       })
     },
     async deleteExpense(id: string) {
-      await axios.delete(`http://localhost:8080/api/expenses/${id}`).then(() => {
+      await axios.delete(`http://localhost:8080/api/expenses/${id}`, {
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken}`
+        }
+      }).then(() => {
         this.fetchAllExpenses({
           month: new Date().getMonth() + 1,
           year: new Date().getFullYear()

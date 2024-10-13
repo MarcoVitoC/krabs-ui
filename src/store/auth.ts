@@ -8,10 +8,15 @@ export const useAuthStore = defineStore('auth', {
       token: localStorage.getItem('token') || null
     }
   },
+  getters: {
+    getToken(state) {
+      return state.token
+    }
+  },
   actions: {
     async register(payload = {}) {
       await axios.post('http://localhost:8080/api/auth/register', payload).then(() => {
-        router.push({name: 'login'})
+        router.push({name: 'Login'})
       }).catch(error => {
         console.error(error)
       })
