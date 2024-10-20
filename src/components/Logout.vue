@@ -8,26 +8,26 @@ const authStore = useAuthStore()
 
 const isModalOpen = ref<boolean>(false)
 
-const openConfirmation = async () => {
-  isModalOpen.value = true
+const toggleLogout = async () => {
+  isModalOpen.value = !isModalOpen.value
 }
 
 const logout= () => {
-  isModalOpen.value = false
+  toggleLogout()
   authStore.logout()
 }
 </script>
 
 <template>
   <Dialog v-model:open="isModalOpen">
-    <Button @click="openConfirmation">Logout</Button>
+    <Button @click="toggleLogout">Logout</Button>
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Are you sure want to logout?</DialogTitle>
       </DialogHeader>
       
       <DialogFooter>
-        <Button>Cancel</Button>
+        <Button @click="toggleLogout">Cancel</Button>
         <Button @click="logout">Yes</Button>
       </DialogFooter>
     </DialogContent>

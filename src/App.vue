@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import Navbar from './components/Navbar.vue'
+import { useAuthStore } from '@/store/auth';
 
-const isAuthenticated = !!localStorage.getItem('token')
+const authStore = useAuthStore()
+const isAuthenticated = computed(() => !!authStore.getToken)
 </script>
 
 <template>
