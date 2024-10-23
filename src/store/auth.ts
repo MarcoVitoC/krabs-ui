@@ -1,11 +1,12 @@
 import { defineStore } from "pinia"
 import axios from "axios"
 import router from "@/router"
+import { useLocalStorage } from "@vueuse/core"
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
-      token: localStorage.getItem('token') || null
+      token: useLocalStorage('token', null)
     }
   },
   getters: {
@@ -15,7 +16,11 @@ export const useAuthStore = defineStore('auth', {
   },
   actions: {
     async register(payload = {}) {
-      await axios.post('http://localhost:8080/api/auth/register', payload).then(() => {
+      await axios.post('http://localhost:8080/api/auth/register', payload).then(res => {
+        console.log(res) 
+        // TODO: 
+        // 1. Must validate when the username already exists
+        // 2. Must give a succeed message after redirected to Login
         router.push({name: 'Login'})
       }).catch(error => {
         console.error(error)
@@ -27,13 +32,12 @@ export const useAuthStore = defineStore('auth', {
       if (response.status === 200) {
         const token = response.data.data
 
-        localStorage.setItem('token', token)
         this.token = token
         router.push({name: 'Overview'})
       }
     },
     logout() {
-      localStorage.removeItem('token')
+      this.token = null
       router.push({name: 'Login'})
     }
   }

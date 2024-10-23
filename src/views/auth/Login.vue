@@ -52,7 +52,7 @@ const onSubmit = form.handleSubmit(async (user) => {
           Login
         </Button>
       </form>
-      <p class="mt-7 text-sm text-gray-500">
+      <p class="mt-7 text-center text-sm text-gray-500">
         Don't have an account? 
         <RouterLink to="/register" class="font-semibold text-primary hover:underline decoration-2">Register</RouterLink>
       </p>
