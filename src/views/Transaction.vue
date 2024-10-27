@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, ref, watch } from 'vue';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import AddExpense from '@/components/AddExpense.vue'
 import UpdateOrDeleteExpense from '@/components/UpdateOrDeleteExpense.vue';
 import { formatDate } from '@vueuse/core';
@@ -7,12 +8,38 @@ import { useExpenseStore } from '@/store/expense'
 
 const expenseStore = useExpenseStore()
 
+const monthNames = [
+  'January', 
+  'February', 
+  'March', 
+  'April', 
+  'May', 
+  'June', 
+  'July', 
+  'August', 
+  'September', 
+  'October', 
+  'November', 
+  'December'
+]
+const selectedMonth = ref((new Date().getMonth() + 1).toString())
+const selectedMonthName = ref(monthNames[parseInt(selectedMonth.value) - 1])
+
 onMounted(() => {
+  fetchExpenses()
+})
+
+watch(selectedMonth, () => {
+  selectedMonthName.value = monthNames[parseInt(selectedMonth.value) - 1]
+  fetchExpenses()
+})
+
+const fetchExpenses = () => {
   expenseStore.fetchAllExpenses({
-    month: new Date().getMonth() + 1,
+    month: parseInt(selectedMonth.value),
     year: new Date().getFullYear()
   });
-})
+}
 
 const monthlyExpenses = computed(() => {
   return expenseStore.getMonthlyExpenses
@@ -43,7 +70,19 @@ const iconBackgroundColor:Record<string, string> = {
 <template>
   <div class="p-10">
     <header class="flex justify-between">
-      <p class="text-2xl font-semibold">📑 Your transactions:</p>
+      <p class="flex gap-2 text-2xl font-semibold">
+        📑 Your transactions in 
+        <Select v-model="selectedMonth">
+          <SelectTrigger class="w-32">
+            <SelectValue :placeholder="selectedMonthName" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem v-for="(month, index) in monthNames" :key="index" :value="(index + 1).toString()">
+              {{ month }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        :</p>
       <AddExpense/>
     </header>
     <div v-for="[date, expenses] in Object.entries(monthlyExpenses)" :key="date">
