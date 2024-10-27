@@ -6,38 +6,63 @@ import { useLocalStorage } from "@vueuse/core"
 export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
-      token: useLocalStorage('token', null)
+      token: useLocalStorage('token', null),
+      message: {
+        text: '',
+        type: ''
+      }
     }
   },
   getters: {
     getToken(state) {
       return state.token
+    },
+    getMessage(state) {
+      return state.message
     }
   },
   actions: {
     async register(payload = {}) {
-      await axios.post('http://localhost:8080/api/auth/register', payload).then(res => {
-        console.log(res) 
-        // TODO: 
-        // 1. Must validate when the username already exists
-        // 2. Must give a succeed message after redirected to Login
-        router.push({name: 'Login'})
+      await axios.post('http://localhost:8080/api/auth/register', payload).then(response => {
+        const { code, error } = response.data
+
+        if (code === 200) {
+          this.message = {
+            text: 'Registration Succeed. Please Login!',
+            type: 'SUCCESS'
+          }
+          router.push({name: 'Login'})
+        } else {
+          this.message = {
+            text: error.USERNAME_ALREADY_EXIST,
+            type: 'REGISTER'
+          }
+        }
       }).catch(error => {
         console.error(error)
       })
     },
     async login(payload = {}) {
       const response = await axios.post('http://localhost:8080/api/auth/login', payload);
+      const { code, data, error } = response.data
 
-      if (response.status === 200) {
-        const token = response.data.data
-
-        this.token = token
+      if (code === 200) {
+        this.token = data
         router.push({name: 'Overview'})
+      } else {
+        this.message = {
+          text: error.INVALID_CREDENTIALS,
+          type: 'LOGIN'
+        }
       }
     },
     logout() {
       this.token = null
+      this.message = {
+        text: '',
+        type: ''
+      }
+      
       router.push({name: 'Login'})
     }
   }

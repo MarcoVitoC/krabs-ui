@@ -2,12 +2,19 @@
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { AlertCircle } from 'lucide-vue-next'
 import { useAuthStore } from '@/store/auth';
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import { useForm } from 'vee-validate'
+import { computed } from 'vue'
 
 const authStore = useAuthStore()
+
+const message = computed(() => authStore.getMessage)
+const text = computed(() => message.value.text)
+const type = computed(() => message.value.type)
+const isError = computed(() => text.value !== '' && type.value === 'REGISTER')
 
 const formSchema = toTypedSchema(z.object({
   username: z.string({required_error: 'Username field cannot be empty!'})
@@ -30,6 +37,10 @@ const onSubmit = form.handleSubmit(async (newUser) => {
     <h1 class="font-bold text-2xl mx-auto">Register</h1>
     <div class="mt-10 mx-auto p-7 bg-primary-foreground border-2 border-navy rounded">
       <form id="registerForm" @submit="onSubmit">
+        <div v-if="isError" class="border border-primary text-primary flex items-center gap-2 mb-3 p-2 rounded">
+          <AlertCircle class="w-4 h-4" />
+          <h1>{{ text }}</h1>
+        </div>
         <FormField v-slot="{ componentField }" name="username">
           <FormItem class="pb-3">
             <FormControl>
