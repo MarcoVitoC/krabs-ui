@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useToast, Toaster } from '@/components/ui/toast'
 import { EllipsisVertical, SquarePen, Trash2 } from 'lucide-vue-next'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -17,8 +16,6 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 
 const props = defineProps<{ expenseId: string }>()
-
-const { toast } = useToast()
 
 const categoryStore = useCategoryStore()
 const expenseStore = useExpenseStore()
@@ -59,20 +56,11 @@ const handleOpenModal = async (operation: string) => {
 
 const handleUpdateExpense = (newExpense: Object) => {
   expenseStore.updateExpense(props.expenseId, newExpense)
-  // showSuccessToast('Expense Updated Successfully!')
 }
 
 const handleDeleteExpense = () => {
   expenseStore.deleteExpense(props.expenseId)
   isModalOpen.value = false
-  // showSuccessToast('Expense Deleted Successfully!')
-}
-
-const showSuccessToast = (message: string) => {
-  toast({
-    title: '✅ Success',
-    description: message
-  });
 }
 
 const formSchema = toTypedSchema(z.object({
@@ -96,8 +84,6 @@ const onSubmit = form.handleSubmit((newExpense) => {
 </script>
 
 <template>
-  <Toaster/>
-
   <DropdownMenu>
     <DropdownMenuTrigger>
       <Button size="icon">

@@ -22,7 +22,9 @@ export const useExpenseStore = defineStore('expense', {
   state: () => {
     return {
       expenses: new Map<string, Expense[]>(),
-      expense: selectedExpense
+      expense: selectedExpense,
+      authToken: useAuthStore().getToken,
+      authUsername: useAuthStore().getUsername
     }
   },
   getters: {
@@ -32,9 +34,11 @@ export const useExpenseStore = defineStore('expense', {
     getSelectedExpense(state) {
       return state.expense
     },
-    getAuthToken() {
-      const authStore = useAuthStore()
-      return authStore.getToken
+    getAuthToken(state) {
+      return state.authToken
+    },
+    getAuthUsername(state) {
+      return state.authUsername
     }
   },
   actions: {
@@ -64,7 +68,8 @@ export const useExpenseStore = defineStore('expense', {
     async saveExpense(payload = {}) {
       await axios.post('http://localhost:8080/api/expenses', payload, {
         headers: {
-          Authorization: `Bearer ${this.getAuthToken}`
+          Authorization: `Bearer ${this.getAuthToken}`,
+          username: this.getAuthUsername
         }
       }).then(() => {
         this.fetchAllExpenses({

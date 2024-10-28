@@ -22,8 +22,8 @@ const monthNames = [
   'November', 
   'December'
 ]
-const selectedMonth = ref((new Date().getMonth() + 1).toString())
-const selectedMonthName = ref(monthNames[parseInt(selectedMonth.value) - 1])
+const selectedMonth = ref<string>((new Date().getMonth() + 1).toString())
+const selectedMonthName = ref<string>(monthNames[parseInt(selectedMonth.value) - 1])
 
 onMounted(() => {
   fetchExpenses()

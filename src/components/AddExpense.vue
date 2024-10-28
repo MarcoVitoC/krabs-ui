@@ -5,7 +5,6 @@ import { FormControl, FormField, FormItem, FormMessage } from './ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'vee-validate'
-import { useToast } from '@/components/ui/toast'
 import { CirclePlus } from 'lucide-vue-next'
 import { ref, computed } from 'vue';
 import { useExpenseStore } from '@/store/expense'
@@ -13,8 +12,6 @@ import { useCategoryStore } from '@/store/category'
 import type { Category } from '@/types/Category'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
-
-const { toast } = useToast()
 
 const categoryStore = useCategoryStore()
 const expenseStore = useExpenseStore()
@@ -43,14 +40,6 @@ const form = useForm({
 
 const handleAddExpense = async (newExpense: Object) => {
   await expenseStore.saveExpense(newExpense)
-  // showSuccessToast('New Expense Added Successfully!')
-}
-
-const showSuccessToast = (message: string) => {
-  toast({
-    title: '✅ Success',
-    description: message
-  });
 }
 
 const onSubmit = form.handleSubmit((newExpense) => {

@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
       token: useLocalStorage('token', null),
+      username: useLocalStorage('username', ''),
       message: {
         text: '',
         type: ''
@@ -19,6 +20,9 @@ export const useAuthStore = defineStore('auth', {
     },
     getMessage(state) {
       return state.message
+    },
+    getUsername(state) {
+      return state.username
     }
   },
   actions: {
@@ -48,6 +52,8 @@ export const useAuthStore = defineStore('auth', {
 
       if (code === 200) {
         this.token = data
+        this.fetchUsername()
+        
         router.push({name: 'Overview'})
       } else {
         this.message = {
@@ -56,8 +62,20 @@ export const useAuthStore = defineStore('auth', {
         }
       }
     },
+    async fetchUsername() {
+      await axios.get('http://localhost:8080/api/auth/username', {
+        headers: {
+          Authorization: `Bearer ${this.token}`
+        }
+      }).then(response => {
+        this.username = response.data.data
+      }).catch(error => {
+        console.error(error)
+      })
+    },
     logout() {
       this.token = null
+      this.username = ''
       this.message = {
         text: '',
         type: ''

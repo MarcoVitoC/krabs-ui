@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { onMounted, computed, ref, watch } from 'vue';
-import { useExpenseStore } from '@/store/expense'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import type { Expense } from '@/types/Expense';
 import { formatDate } from '@vueuse/core';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { AreaChart } from '@/components/ui/chart-area'
+import { useExpenseStore } from '@/store/expense'
+import { useAuthStore } from '@/store/auth';
+import type { Expense } from '@/types/Expense';
 
 const expenseStore = useExpenseStore()
+const authStore = useAuthStore()
+
 const monthNames = [
   'January', 
   'February', 
@@ -21,8 +24,9 @@ const monthNames = [
   'November', 
   'December'
 ]
-const selectedMonth = ref((new Date().getMonth() + 1).toString())
-const selectedMonthName = ref(monthNames[parseInt(selectedMonth.value) - 1])
+const selectedMonth = ref<string>((new Date().getMonth() + 1).toString())
+const selectedMonthName = ref<string>(monthNames[parseInt(selectedMonth.value) - 1])
+const username = computed<string>(() => authStore.getUsername || '')
 
 onMounted(() => {
   fetchExpenses()
@@ -86,7 +90,7 @@ const expenseChartData = computed(() => {
   <div class="p-10">
     <header>
       <p class="flex gap-2 text-2xl font-semibold">
-        📊 Your total expense in 
+        Welcome back {{ username }} 👋, your total expense in 
         <Select v-model="selectedMonth">
           <SelectTrigger class="w-32">
             <SelectValue :placeholder="selectedMonthName" />
@@ -97,7 +101,7 @@ const expenseChartData = computed(() => {
             </SelectItem>
           </SelectContent>
         </Select>
-          : {{ totalExpense }}
+          is {{ totalExpense }}
       </p>
     </header>
     <AreaChart 
