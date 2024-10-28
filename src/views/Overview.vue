@@ -37,8 +37,8 @@ watch(selectedMonth, () => {
   fetchExpenses()
 })
 
-const fetchExpenses = () => {
-  expenseStore.fetchAllExpenses({
+const fetchExpenses = async () => {
+  await expenseStore.fetchAllExpenses({
     month: parseInt(selectedMonth.value),
     year: new Date().getFullYear()
   });
