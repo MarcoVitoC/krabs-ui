@@ -46,7 +46,8 @@ export const useExpenseStore = defineStore('expense', {
       await axios.get('http://localhost:8080/api/expenses', {
         params, 
         headers: {
-          Authorization: `Bearer ${this.getAuthToken}`
+          Authorization: `Bearer ${this.getAuthToken}`,
+          username: this.getAuthUsername
         }
       }).then(response => {
         this.expenses = response.data.data
