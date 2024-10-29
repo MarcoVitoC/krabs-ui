@@ -3,6 +3,7 @@ import type { Expense } from '@/types/Expense';
 import type { Category } from '@/types/Category';
 import { useAuthStore } from '@/store/auth';
 import axios from "axios"
+import { computed } from "vue";
 
 const category: Category = {
   id: '',
@@ -23,11 +24,22 @@ export const useExpenseStore = defineStore('expense', {
     return {
       expenses: new Map<string, Expense[]>(),
       expense: selectedExpense,
-      authToken: useAuthStore().getToken,
-      authUsername: useAuthStore().getUsername
+      authToken: computed(() => useAuthStore().getToken),
+      authUsername: computed(() => useAuthStore().getUsername)
     }
   },
   getters: {
+    getMonthlyExpenseTotal(state) {
+      let total = 0
+
+      Object.values(state.expenses).forEach(expenses => {
+        expenses.forEach((expense: Expense) => {
+          total += expense.amount
+        })
+      })
+
+      return total
+    },
     getMonthlyExpenses(state) {
       return state.expenses
     },

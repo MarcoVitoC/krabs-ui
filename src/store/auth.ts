@@ -52,7 +52,7 @@ export const useAuthStore = defineStore('auth', {
 
       if (code === 200) {
         this.token = data
-        this.fetchUsername()
+        await this.fetchUsername()
         
         router.push({name: 'Overview'})
       } else {

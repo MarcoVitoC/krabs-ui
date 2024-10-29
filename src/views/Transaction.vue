@@ -24,6 +24,7 @@ const monthNames = [
 ]
 const selectedMonth = ref<string>((new Date().getMonth() + 1).toString())
 const selectedMonthName = ref<string>(monthNames[parseInt(selectedMonth.value) - 1])
+const totalExpense = computed<number>(() => expenseStore.getMonthlyExpenseTotal)
 
 onMounted(() => {
   fetchExpenses()
@@ -85,20 +86,25 @@ const iconBackgroundColor:Record<string, string> = {
         :</p>
       <AddExpense/>
     </header>
-    <div v-for="[date, expenses] in Object.entries(monthlyExpenses)" :key="date">
-      <div class="my-8" v-if="!isEmpty(expenses)">
-        <p class="font-medium text-lg mb-3">{{ formatDate(new Date(date), "dddd, DD MMMM YYYY") }}</p>
-        <div class="flex justify-between items-center bg-primary-foreground border-2 border-navy rounded space-x-10 p-3" v-for="expense in expenses" :key="expense.id">
-          <p class="w-36 p-3 rounded-lg" :style="{backgroundColor: iconBackgroundColor[expense.category.name]}">
-            {{ expense.category.icon }} {{ expense.category.name }}
-          </p>
-          <p class="flex-1">{{ expense.description }}</p>
-          <p class="flex-1">{{ formatCurrency(expense.amount) }}</p>
-          <p class="flex-1">{{ expense.paymentMethod }}</p>
-          
-          <UpdateOrDeleteExpense :expenseId="expense.id" />
+    <div v-if="totalExpense > 0">
+      <div v-for="[date, expenses] in Object.entries(monthlyExpenses)" :key="date">
+        <div class="my-8" v-if="!isEmpty(expenses)">
+          <p class="font-medium text-lg mb-3">{{ formatDate(new Date(date), "dddd, DD MMMM YYYY") }}</p>
+          <div class="flex justify-between items-center bg-primary-foreground border-2 border-navy rounded space-x-10 p-3" v-for="expense in expenses" :key="expense.id">
+            <p class="w-36 p-3 rounded-lg" :style="{backgroundColor: iconBackgroundColor[expense.category.name]}">
+              {{ expense.category.icon }} {{ expense.category.name }}
+            </p>
+            <p class="flex-1">{{ expense.description }}</p>
+            <p class="flex-1">{{ formatCurrency(expense.amount) }}</p>
+            <p class="flex-1">{{ expense.paymentMethod }}</p>
+            
+            <UpdateOrDeleteExpense :expenseId="expense.id" />
+          </div>
         </div>
       </div>
+    </div>
+    <div v-else class="text-4xl text-gray-300 font-semibold text-center my-56">
+      <h1>🍃 No expenses yet.</h1>
     </div>
   </div>
 </template>

@@ -27,6 +27,7 @@ const monthNames = [
 const selectedMonth = ref<string>((new Date().getMonth() + 1).toString())
 const selectedMonthName = ref<string>(monthNames[parseInt(selectedMonth.value) - 1])
 const username = computed<string>(() => authStore.getUsername || '')
+const totalExpense = computed<number>(() => expenseStore.getMonthlyExpenseTotal)
 
 onMounted(() => {
   fetchExpenses()
@@ -50,18 +51,6 @@ const formatCurrency = (amount: number): string => {
     currency: 'IDR'
   }).format(amount);
 }
-
-const totalExpense = computed(() => {
-  let total = 0
-
-  Object.values(expenseStore.getMonthlyExpenses).forEach(expenses => {
-    expenses.forEach((expense: Expense) => {
-      total += expense.amount
-    })
-  })
-
-  return formatCurrency(total)
-})
 
 const weeklyExpenses = computed(() => {
   const weeklyExpensesMap: Record<string, number> = {}
@@ -101,16 +90,21 @@ const expenseChartData = computed(() => {
             </SelectItem>
           </SelectContent>
         </Select>
-          is {{ totalExpense }}
+          is {{ formatCurrency(totalExpense) }}
       </p>
     </header>
-    <AreaChart 
-      class="mt-5 p-5 w-[900px] h-[450px] border-2 border-navy rounded" 
-      index="date" 
-      :data="expenseChartData" 
-      :categories="['total']"
-      :colors="['#001F3F']"
-      :show-legend="false"
-    />
+    <div v-if="totalExpense > 0">
+      <AreaChart 
+        class="mt-5 p-5 w-[900px] h-[450px] border-2 border-navy rounded" 
+        index="date" 
+        :data="expenseChartData" 
+        :categories="['total']"
+        :colors="['#001F3F']"
+        :show-legend="false"
+      />
+    </div>
+    <div v-else class="text-4xl text-gray-300 font-semibold text-center my-56">
+      <h1>🍃 No expenses yet.</h1>
+    </div>
   </div>
 </template>
